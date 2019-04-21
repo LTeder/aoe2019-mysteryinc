@@ -6,10 +6,10 @@
 
 #include <Encoder.h>
 
-#define ledA 2
-#define ledB 3
-#define rotaryOutputA 4
-#define rotaryOutputB 5
+#define rotaryOutputA 2
+#define rotaryOutputB 3
+#define ledA 4
+#define ledB 5
 
 long oldPosition = 0;
 long newPosition;
@@ -29,25 +29,27 @@ void setup() {
 void loop() {
     newPosition = rotaryEncoder.read();
     currentMillis = millis();
-    if (newPosition != oldPosition) {
-        if (newPosition < oldPosition) {
-            digitalWrite(ledB,LOW);
-            digitalWrite(ledA,HIGH);
-            //rotateCW();
-        } else {
-            digitalWrite(ledA,LOW);
-            digitalWrite(ledB,HIGH);
-            //rotateCCW();
-        }
-        startMillis = currentMillis;
-        oldPosition = newPosition;
+    if (newPosition < oldPosition) {
+        digitalWrite(ledB,LOW);
+        digitalWrite(ledA,HIGH);
+        updateEnc();
+        //rotateCW();
+    } else if (newPosition > oldPosition) {
+        digitalWrite(ledA,LOW);
+        digitalWrite(ledB,HIGH);
+        updateEnc();
+        //rotateCCW();
     }
     if (currentMillis - startMillis >= period) {
-        startMillis = currentMillis; 
         digitalWrite(ledA,LOW);
         digitalWrite(ledB,LOW);
-        rotaryEncoder.write(0);
+        updateEnc();
     }
+}
+
+void updateEnc() {
+    startMillis = currentMillis;
+    oldPosition = newPosition;
 }
 
 /*
