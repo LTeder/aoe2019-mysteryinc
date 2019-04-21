@@ -1,7 +1,7 @@
 /*
  * AoE Common Project
  * Mystery, Inc.
- * Does shit
+ * Does stuff
  */
 
 #include <Encoder.h>
