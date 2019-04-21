@@ -1,0 +1,1 @@
+Add these folders to the /libraries/ folder in your Arduino IDE install directory
