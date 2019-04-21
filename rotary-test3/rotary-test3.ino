@@ -11,29 +11,43 @@
 #define rotaryOutputA 4
 #define rotaryOutputB 5
 
-Encoder myEnc(rotaryOutputA, rotaryOutputB);
+long oldPosition = 0;
+long newPosition;
+unsigned long startMillis;
+unsigned long currentMillis;
+const unsigned long period = 750; // 750ms before LED transitions
+
+Encoder rotaryEncoder(rotaryOutputA, rotaryOutputB);
 
 void setup() {
       pinMode(ledA,OUTPUT);
       pinMode(ledB,OUTPUT);
+      startMillis = millis(); // ms since program started
 }
 
-long oldPosition  = -999;
 
 void loop() {
-    long newPosition = myEnc.read();
+    newPosition = rotaryEncoder.read();
+    currentMillis = millis();
     if (newPosition != oldPosition) {
-        if (newPosition > oldPosition) {
-            digitalWrite(ledB,HIGH);
-            //rotateCCW();
-        } else {
+        if (newPosition < oldPosition) {
+            digitalWrite(ledB,LOW);
             digitalWrite(ledA,HIGH);
             //rotateCW();
+        } else {
+            digitalWrite(ledA,LOW);
+            digitalWrite(ledB,HIGH);
+            //rotateCCW();
         }
+        startMillis = currentMillis;
         oldPosition = newPosition;
     }
-    digitalWrite(ledA,LOW);
-    digitalWrite(ledB,LOW);
+    if (currentMillis - startMillis >= period) {
+        startMillis = currentMillis; 
+        digitalWrite(ledA,LOW);
+        digitalWrite(ledB,LOW);
+        rotaryEncoder.write(0);
+    }
 }
 
 /*
